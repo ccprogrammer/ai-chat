@@ -37,4 +37,7 @@ def init_db():
     """
     Initialize database - create all tables
     """
+    # Ensure models are imported before creating tables
+    # (otherwise Base.metadata may be empty at startup)
+    from app.models import database  # noqa: F401
     Base.metadata.create_all(bind=engine)

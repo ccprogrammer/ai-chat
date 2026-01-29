@@ -7,7 +7,6 @@ from app.core.enum import AIModel
 # Chat Management Schemas
 class ChatCreateRequest(BaseModel):
     """Request to create a new chat"""
-    user_id: str = Field(..., description="Unique identifier for the user")
     title: Optional[str] = Field(None, description="Optional title for the chat")
 
 
@@ -56,10 +55,6 @@ class ChatRequest(BaseModel):
     chat_id: str = Field(
         ...,
         description="Unique identifier for the chat/conversation"
-    )
-    user_id: str = Field(
-        ...,
-        description="Unique identifier for the user (for authorization)"
     )
     message: str = Field(
         ...,

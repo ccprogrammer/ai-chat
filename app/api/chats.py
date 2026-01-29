@@ -5,7 +5,9 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import Optional
 from app.core.database import get_db
-from app.repositories.chat_repository import ChatRepository, MessageRepository
+from app.core.auth import get_current_user
+from app.repositories.chat_repository import ChatRepository
+from app.repositories.message_repository import MessageRepository
 from app.models.schemas import (
     ChatCreateRequest,
     ChatUpdateRequest,
@@ -21,12 +23,13 @@ router = APIRouter(prefix="/chats", tags=["chats"])
 @router.post("", response_model=ChatResponse, status_code=201)
 def create_chat(
     request: ChatCreateRequest,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     """
     Create a new chat for a user
     """
-    chat = ChatRepository.create_chat(db, request.user_id, request.title)
+    chat = ChatRepository.create_chat(db, current_user.id, request.title)
     
     # Return chat with message count
     return ChatResponse(
@@ -41,15 +44,15 @@ def create_chat(
 
 @router.get("", response_model=ChatListResponse)
 def list_chats(
-    user_id: str = Query(..., description="User ID to get chats for"),
     limit: int = Query(50, ge=1, le=100, description="Maximum number of chats to return"),
     offset: int = Query(0, ge=0, description="Number of chats to skip"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     """
     Get all chats for a user
     """
-    chats = ChatRepository.get_user_chats(db, user_id, limit, offset)
+    chats = ChatRepository.get_user_chats(db, current_user.id, limit, offset)
     
     # Get message count for each chat
     chat_responses = []
@@ -65,7 +68,7 @@ def list_chats(
         ))
     
     # Get total count (simplified - in production, use count query)
-    total = len(ChatRepository.get_user_chats(db, user_id, limit=1000))
+    total = len(ChatRepository.get_user_chats(db, current_user.id, limit=1000))
     
     return ChatListResponse(chats=chat_responses, total=total)
 
@@ -73,13 +76,13 @@ def list_chats(
 @router.get("/{chat_id}", response_model=ChatResponse)
 def get_chat(
     chat_id: str,
-    user_id: str = Query(..., description="User ID for authorization"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     """
     Get a specific chat by ID
     """
-    chat = ChatRepository.get_chat_by_id(db, chat_id, user_id)
+    chat = ChatRepository.get_chat_by_id(db, chat_id, current_user.id)
     if not chat:
         raise ChatNotFoundError(chat_id)
     
@@ -98,15 +101,15 @@ def get_chat(
 @router.get("/{chat_id}/messages", response_model=list[MessageResponse])
 def get_chat_messages(
     chat_id: str,
-    user_id: str = Query(..., description="User ID for authorization"),
     limit: Optional[int] = Query(None, ge=1, le=500, description="Maximum number of messages to return"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     """
     Get all messages for a specific chat
     """
     # Verify chat exists and belongs to user
-    chat = ChatRepository.get_chat_by_id(db, chat_id, user_id)
+    chat = ChatRepository.get_chat_by_id(db, chat_id, current_user.id)
     if not chat:
         raise ChatNotFoundError(chat_id)
     
@@ -118,13 +121,13 @@ def get_chat_messages(
 def update_chat(
     chat_id: str,
     request: ChatUpdateRequest,
-    user_id: str = Query(..., description="User ID for authorization"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     """
     Update a chat's title
     """
-    chat = ChatRepository.update_chat_title(db, chat_id, user_id, request.title)
+    chat = ChatRepository.update_chat_title(db, chat_id, current_user.id, request.title)
     if not chat:
         raise ChatNotFoundError(chat_id)
     
@@ -143,13 +146,13 @@ def update_chat(
 @router.delete("/{chat_id}", status_code=204)
 def delete_chat(
     chat_id: str,
-    user_id: str = Query(..., description="User ID for authorization"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     """
     Delete a chat and all its messages
     """
-    deleted = ChatRepository.delete_chat(db, chat_id, user_id)
+    deleted = ChatRepository.delete_chat(db, chat_id, current_user.id)
     if not deleted:
         raise ChatNotFoundError(chat_id)
     

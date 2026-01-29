@@ -3,7 +3,7 @@ Memory/Message service - now uses database via repository
 """
 from typing import List
 from sqlalchemy.orm import Session
-from app.repositories.chat_repository import MessageRepository
+from app.repositories.message_repository import MessageRepository
 
 
 def add_message(db: Session, chat_id: str, role: str, content: str):

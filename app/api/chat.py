@@ -4,6 +4,7 @@ API endpoint for sending messages to AI in a chat
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from app.core.database import get_db
+from app.core.auth import get_current_user
 from app.models.schemas import ChatRequest, ChatMessageResponse
 from app.services.ai_service import chat_with_ai
 from app.repositories.chat_repository import ChatRepository
@@ -15,7 +16,8 @@ router = APIRouter(tags=["chat"])
 @router.post("/chat", response_model=ChatMessageResponse)
 def send_message(
     request: ChatRequest,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     """
     Send a message to AI in a specific chat
@@ -23,7 +25,7 @@ def send_message(
     Verifies that the chat exists and belongs to the user before processing.
     """
     # Verify chat exists and belongs to user
-    chat = ChatRepository.get_chat_by_id(db, request.chat_id, request.user_id)
+    chat = ChatRepository.get_chat_by_id(db, request.chat_id, current_user.id)
     if not chat:
         raise ChatNotFoundError(request.chat_id)
     

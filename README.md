@@ -6,6 +6,7 @@ A professional, production-ready AI chat backend built with FastAPI, supporting 
 
 - ✅ **Multiple Chat Support**: Create and manage multiple chat conversations per user
 - ✅ **Persistent Storage**: SQLite database with SQLAlchemy ORM
+- ✅ **Auth (Email/Password)**: Register/login and protect chat endpoints with JWT Bearer tokens
 - ✅ **RESTful API**: Clean, well-documented REST endpoints
 - ✅ **Professional Structure**: Organized codebase following best practices
 - ✅ **Error Handling**: Comprehensive error handling with custom exceptions
@@ -64,14 +65,19 @@ The API will be available at `http://localhost:8000`
 
 ## API Endpoints
 
+### Authentication
+
+- `POST /auth/register` - Create account (email/password)
+- `POST /auth/login` - Login and get JWT access token
+
 ### Chat Management
 
 - `POST /chats` - Create a new chat
-- `GET /chats` - List all chats for a user
-- `GET /chats/{chat_id}` - Get a specific chat
-- `GET /chats/{chat_id}/messages` - Get all messages in a chat
-- `PATCH /chats/{chat_id}` - Update chat title
-- `DELETE /chats/{chat_id}` - Delete a chat
+- `GET /chats` - List all chats for the current user
+- `GET /chats/{chat_id}` - Get a specific chat (current user)
+- `GET /chats/{chat_id}/messages` - Get all messages in a chat (current user)
+- `PATCH /chats/{chat_id}` - Update chat title (current user)
+- `DELETE /chats/{chat_id}` - Delete a chat (current user)
 
 ### Chat Interaction
 
@@ -86,13 +92,35 @@ The API will be available at `http://localhost:8000`
 
 ## Usage Examples
 
+### Register
+
+```bash
+curl -X POST "http://localhost:8000/auth/register" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "password": "password123"
+  }'
+```
+
+### Login (get token)
+
+```bash
+curl -X POST "http://localhost:8000/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "password": "password123"
+  }'
+```
+
 ### Create a Chat
 
 ```bash
 curl -X POST "http://localhost:8000/chats" \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
   -H "Content-Type: application/json" \
   -d '{
-    "user_id": "user123",
     "title": "My First Chat"
   }'
 ```
@@ -101,10 +129,10 @@ curl -X POST "http://localhost:8000/chats" \
 
 ```bash
 curl -X POST "http://localhost:8000/chat" \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
   -H "Content-Type: application/json" \
   -d '{
     "chat_id": "chat-uuid-here",
-    "user_id": "user123",
     "message": "Hello, AI!",
     "model": "fast"
   }'
@@ -113,7 +141,8 @@ curl -X POST "http://localhost:8000/chat" \
 ### List All Chats
 
 ```bash
-curl "http://localhost:8000/chats?user_id=user123"
+curl "http://localhost:8000/chats" \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"
 ```
 
 ## Database

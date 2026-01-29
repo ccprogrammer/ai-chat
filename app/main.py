@@ -3,6 +3,7 @@ Main FastAPI application
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.api.auth import router as auth_router
 from app.api.chat import router as chat_router
 from app.api.chats import router as chats_router
 from app.core.database import init_db
@@ -27,6 +28,7 @@ app.add_middleware(
 )
 
 # Include routers
+app.include_router(auth_router)  # Auth endpoints
 app.include_router(chats_router)  # Chat management endpoints
 app.include_router(chat_router)  # Chat message endpoint
 
