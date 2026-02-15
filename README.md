@@ -68,7 +68,8 @@ The API will be available at `http://localhost:8000`
 ### Authentication
 
 - `POST /auth/register` - Create account (email/password)
-- `POST /auth/login` - Login and get JWT access token
+- `POST /auth/login` - Login with JSON body (email + password), returns JWT
+- `POST /auth/token` - OAuth2 token endpoint (form: username=email, password); used by Swagger "Authorize"
 
 ### Chat Management
 
@@ -89,6 +90,11 @@ The API will be available at `http://localhost:8000`
 - `GET /health` - Health check
 - `GET /docs` - Interactive API documentation (Swagger UI)
 - `GET /redoc` - Alternative API documentation (ReDoc)
+
+## Authentication (how to stay logged in)
+
+- **Swagger UI (`/docs`)**: Click **Authorize**, enter your **email** in the *username* field and your password, then click Authorize. All subsequent requests will send the Bearer token automatically.
+- **curl / app**: After `POST /auth/login`, copy `access_token` from the response and send it in the header: `Authorization: Bearer <access_token>` on every request.
 
 ## Usage Examples
 
