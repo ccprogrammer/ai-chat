@@ -187,6 +187,22 @@ The application uses SQLite by default (can be configured via `DATABASE_URL`). T
 3. **New Data Model**: Add to `app/models/database.py` and schema to `app/models/schemas.py`
 4. **New Repository Method**: Add to `app/repositories/`
 
+### Testing (like Flutter unit/feature tests)
+
+Tests are in `tests/`. You **don’t** test APIs one-by-one by hand: you write test code once, then run the whole suite in one command.
+
+- **Run all tests**: `pytest` or `pytest -v` (verbose)
+- **Run with coverage**: `pytest --cov=app`
+- **Run one file**: `pytest tests/test_auth.py -v`
+- **Run one test**: `pytest tests/test_auth.py::test_login_ok -v`
+
+**Fixtures** (in `tests/conftest.py`):
+
+- `client` – FastAPI `TestClient` with a **fresh in-memory DB per test** (no real DB touched).
+- `auth_headers` – Registers a user, logs in, returns `{"Authorization": "Bearer <token>"}` so you can call protected endpoints.
+
+**Adding tests for new APIs**: Add a test file (e.g. `tests/test_chat_messages.py`) and use `client` and `auth_headers` the same way. One test per behavior (e.g. “create chat without auth → 401”, “create with auth → 201”). Then `pytest` runs everything in seconds.
+
 ## License
 
 MIT
