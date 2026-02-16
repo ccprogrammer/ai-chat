@@ -8,19 +8,18 @@ from app.core.config import SYSTEM_PROMPT
 from app.core.exceptions import AIProviderError
 
 
-def chat_with_ai(db: Session, chat_id: str, user_message: str, model: str) -> str:
+def chat_with_ai(db: Session, chat_id: str, user_message: str) -> str:
     """
-    Process a user message and get AI response
-    
+    Process a user message and get AI response (always uses fast model).
+
     Args:
         db: Database session
         chat_id: ID of the chat conversation
         user_message: User's message
-        model: AI model to use
-        
+
     Returns:
         AI's reply
-        
+
     Raises:
         AIProviderError: If AI service fails
     """
@@ -32,8 +31,8 @@ def chat_with_ai(db: Session, chat_id: str, user_message: str, model: str) -> st
         messages = [{"role": "system", "content": SYSTEM_PROMPT}]
         messages.extend(get_conversation(db, chat_id))
 
-        # Get AI reply
-        ai_reply = generate_chat_completion(messages, model)
+        # Get AI reply (fast model only)
+        ai_reply = generate_chat_completion(messages)
 
         # Save AI reply to conversation
         add_message(db, chat_id, "assistant", ai_reply)

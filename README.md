@@ -23,14 +23,12 @@ app/
 ├── core/            # Core utilities
 │   ├── config.py    # Configuration
 │   ├── database.py  # Database setup
-│   ├── enum.py      # Enumerations
 │   └── exceptions.py # Custom exceptions
 ├── models/          # Data models
 │   ├── database.py  # SQLAlchemy models
 │   └── schemas.py   # Pydantic schemas
 ├── providers/       # AI provider integrations
-│   ├── groq_provider.py
-│   └── model_registry.py
+│   └── groq_provider.py
 ├── repositories/    # Data access layer
 │   └── chat_repository.py
 ├── services/        # Business logic
@@ -139,8 +137,7 @@ curl -X POST "http://localhost:8000/chat" \
   -H "Content-Type: application/json" \
   -d '{
     "chat_id": "chat-uuid-here",
-    "message": "Hello, AI!",
-    "model": "fast"
+    "message": "Hello, AI!"
   }'
 ```
 

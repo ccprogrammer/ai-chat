@@ -1,7 +1,6 @@
 from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import Optional, List
-from app.core.enum import AIModel
 
 
 # Chat Management Schemas
@@ -60,10 +59,6 @@ class ChatRequest(BaseModel):
         ...,
         min_length=1,
         description="User message to the AI"
-    )
-    model: AIModel = Field(
-        default=AIModel.FAST,
-        description="AI model preference selected by the user"
     )
 
 
