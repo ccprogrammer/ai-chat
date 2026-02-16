@@ -300,4 +300,4 @@ Tests are in `tests/`. You **don’t** test APIs one-by-one by hand: you write t
 
 ## License
 
-MIT
+MIT – see the `LICENSE` file for full text.
