@@ -84,12 +84,16 @@ The API will be available at `http://localhost:8000`
 
 ### Admin (admin only)
 
+- `POST /admin/bootstrap/users/{user_id}/make-admin` - **DEV ONLY**: bootstrap a user to `role=admin` without login (use from Swagger to create the first admin)
 - `GET /admin/users` - List all users
 - `PATCH /admin/users/{user_id}/role` - Change a user's role (`user` or `admin`)
 - `GET /admin/users/{user_id}/chats` - List all chats of a user
 - `GET /admin/chats/{chat_id}/messages` - Get all messages in any chat
 
-Admins are users whose `role` is set to `admin` in the database. New users always start with `role=\"user\"`; existing admins can promote/demote users using `PATCH /admin/users/{user_id}/role`.
+Admins are users whose `role` is set to `admin` in the database. New users always start with `role=\"user\"`; you can:
+
+- In development: call `POST /admin/bootstrap/users/{user_id}/make-admin` once (from Swagger) to create the first admin.
+- After that: existing admins can promote/demote users using `PATCH /admin/users/{user_id}/role`.
 
 ### Other
 

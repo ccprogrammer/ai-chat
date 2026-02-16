@@ -19,6 +19,26 @@ from app.core.exceptions import UserNotFoundError, ChatNotFoundError
 router = APIRouter(prefix="/admin", tags=["admin"])
 
 
+@router.post("/bootstrap/users/{user_id}/make-admin", response_model=UserResponse)
+def bootstrap_make_admin(
+    user_id: str,
+    db: Session = Depends(get_db),
+):
+    """
+    DEVELOPMENT ONLY: make a user admin without being logged in.
+
+    Use this to bootstrap the first admin from Swagger:
+    1. Register a user via /auth/register and copy their id.
+    2. Call this endpoint with that id to set role='admin'.
+
+    WARNING: Do NOT expose this in a real production environment.
+    """
+    user = UserRepository.update_role(db, user_id, "admin")
+    if not user:
+        raise UserNotFoundError(user_id)
+    return user
+
+
 @router.get("/users", response_model=List[UserResponse])
 def list_all_users(
     limit: int = Query(100, ge=1, le=500),
