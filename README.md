@@ -109,7 +109,9 @@ Admins are users whose `role` is set to `admin` in the database. New users alway
 
 ## Usage Examples
 
-### Register
+### Auth APIs
+
+#### `POST /auth/register` – Register a new user
 
 ```bash
 curl -X POST "http://localhost:8000/auth/register" \
@@ -120,7 +122,7 @@ curl -X POST "http://localhost:8000/auth/register" \
   }'
 ```
 
-### Login (get token)
+#### `POST /auth/login` – Get access token
 
 ```bash
 curl -X POST "http://localhost:8000/auth/login" \
@@ -131,7 +133,9 @@ curl -X POST "http://localhost:8000/auth/login" \
   }'
 ```
 
-### Create a Chat
+### Chat Management APIs
+
+#### `POST /chats` – Create a new chat
 
 ```bash
 curl -X POST "http://localhost:8000/chats" \
@@ -142,7 +146,48 @@ curl -X POST "http://localhost:8000/chats" \
   }'
 ```
 
-### Send a Message
+#### `GET /chats` – List all chats for the current user
+
+```bash
+curl "http://localhost:8000/chats" \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"
+```
+
+#### `GET /chats/{chat_id}` – Get a single chat
+
+```bash
+curl "http://localhost:8000/chats/CHAT_ID_HERE" \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"
+```
+
+#### `GET /chats/{chat_id}/messages` – Get messages in a chat
+
+```bash
+curl "http://localhost:8000/chats/CHAT_ID_HERE/messages" \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"
+```
+
+#### `PATCH /chats/{chat_id}` – Update chat title
+
+```bash
+curl -X PATCH "http://localhost:8000/chats/CHAT_ID_HERE" \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Renamed Chat"
+  }'
+```
+
+#### `DELETE /chats/{chat_id}` – Delete a chat
+
+```bash
+curl -X DELETE "http://localhost:8000/chats/CHAT_ID_HERE" \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"
+```
+
+### Chat Interaction APIs
+
+#### `POST /chat` – Send a message to the AI in a chat
 
 ```bash
 curl -X POST "http://localhost:8000/chat" \
@@ -154,46 +199,9 @@ curl -X POST "http://localhost:8000/chat" \
   }'
 ```
 
-### List All Chats
+### Admin / Bootstrap APIs
 
-```bash
-curl "http://localhost:8000/chats" \
-  -H "Authorization: Bearer YOUR_TOKEN_HERE"
-```
-
-### Get One Chat
-
-```bash
-curl "http://localhost:8000/chats/CHAT_ID_HERE" \
-  -H "Authorization: Bearer YOUR_TOKEN_HERE"
-```
-
-### Get Messages in a Chat
-
-```bash
-curl "http://localhost:8000/chats/CHAT_ID_HERE/messages" \
-  -H "Authorization: Bearer YOUR_TOKEN_HERE"
-```
-
-### Update Chat Title
-
-```bash
-curl -X PATCH "http://localhost:8000/chats/CHAT_ID_HERE" \
-  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "title": "Renamed Chat"
-  }'
-```
-
-### Delete Chat
-
-```bash
-curl -X DELETE "http://localhost:8000/chats/CHAT_ID_HERE" \
-  -H "Authorization: Bearer YOUR_TOKEN_HERE"
-```
-
-### Bootstrap First Admin (DEV ONLY)
+#### `POST /admin/bootstrap/users/{user_id}/make-admin` – **DEV ONLY** bootstrap first admin
 
 1. Register a user and copy the returned `id`.
 2. Call this (no auth required, only for local development):
@@ -202,14 +210,16 @@ curl -X DELETE "http://localhost:8000/chats/CHAT_ID_HERE" \
 curl -X POST "http://localhost:8000/admin/bootstrap/users/USER_ID_HERE/make-admin"
 ```
 
-### Admin: List All Users
+### Admin APIs (require `role=admin`)
+
+#### `GET /admin/users` – List all users
 
 ```bash
 curl "http://localhost:8000/admin/users" \
   -H "Authorization: Bearer ADMIN_TOKEN_HERE"
 ```
 
-### Admin: Change User Role
+#### `PATCH /admin/users/{user_id}/role` – Change a user's role
 
 ```bash
 curl -X PATCH "http://localhost:8000/admin/users/USER_ID_HERE/role" \
@@ -220,14 +230,14 @@ curl -X PATCH "http://localhost:8000/admin/users/USER_ID_HERE/role" \
   }'
 ```
 
-### Admin: List a User's Chats
+#### `GET /admin/users/{user_id}/chats` – List a user's chats
 
 ```bash
 curl "http://localhost:8000/admin/users/USER_ID_HERE/chats" \
   -H "Authorization: Bearer ADMIN_TOKEN_HERE"
 ```
 
-### Admin: Get Messages in Any Chat
+#### `GET /admin/chats/{chat_id}/messages` – Get messages in any chat
 
 ```bash
 curl "http://localhost:8000/admin/chats/CHAT_ID_HERE/messages" \
