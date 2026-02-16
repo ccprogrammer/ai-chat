@@ -201,13 +201,13 @@ curl -X POST "http://localhost:8000/chat" \
 
 ### Admin / Bootstrap APIs
 
-#### `POST /admin/bootstrap/users/{user_id}/make-admin` – **DEV ONLY** bootstrap first admin
+#### `POST /admin/bootstrap/users/{email}/make-admin` – **DEV ONLY** bootstrap first admin
 
-1. Register a user and copy the returned `id`.
+1. Register a user and remember their `email`.
 2. Call this (no auth required, only for local development):
 
 ```bash
-curl -X POST "http://localhost:8000/admin/bootstrap/users/USER_ID_HERE/make-admin"
+curl -X POST "http://localhost:8000/admin/bootstrap/users/user@example.com/make-admin"
 ```
 
 ### Admin APIs (require `role=admin`)

@@ -40,6 +40,17 @@ class UserRepository:
         return user
 
     @staticmethod
+    def update_role_by_email(db: Session, email: str, role: str) -> Optional[User]:
+        """Update a user's role by email (for bootstrap/dev helpers)."""
+        user = UserRepository.get_by_email(db, email)
+        if not user:
+            return None
+        user.role = role
+        db.commit()
+        db.refresh(user)
+        return user
+
+    @staticmethod
     def get_all_users(db: Session, limit: int = 100, offset: int = 0):
         """Return all users (for admin)."""
         return db.query(User).order_by(User.created_at.desc()).offset(offset).limit(limit).all()
