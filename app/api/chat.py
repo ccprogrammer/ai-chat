@@ -29,11 +29,12 @@ def send_message(
     if not chat:
         raise ChatNotFoundError(request.chat_id)
     
-    # Get AI reply (always uses fast model)
+    # Get AI reply (always uses fast model); pass user_id so first message can set chat title
     reply = chat_with_ai(
         db=db,
         chat_id=request.chat_id,
         user_message=request.message,
+        user_id=current_user.id,
     )
     
     return ChatMessageResponse(reply=reply, chat_id=request.chat_id)

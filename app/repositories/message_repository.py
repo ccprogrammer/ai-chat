@@ -30,6 +30,11 @@ class MessageRepository:
         return message
 
     @staticmethod
+    def get_message_count(db: Session, chat_id: str) -> int:
+        """Return the number of messages in a chat (e.g. to detect first message)."""
+        return db.query(Message).filter(Message.chat_id == chat_id).count()
+
+    @staticmethod
     def get_chat_messages(db: Session, chat_id: str, limit: Optional[int] = None) -> List[Message]:
         """
         Get all messages for a chat, ordered by creation time
