@@ -7,6 +7,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
+from app.core.auth import get_current_user
 from app.core.security import create_access_token
 from app.models.schemas.auth import (
     UserRegisterRequest,
@@ -45,6 +46,12 @@ def login(request: UserLoginRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
     token = create_access_token(subject=user.id)
     return TokenResponse(access_token=token)
+
+
+@router.get("/me", response_model=UserResponse)
+def get_me(user=Depends(get_current_user)):
+    """Get current user info (id, email, role). Requires valid JWT."""
+    return user
 
 
 @router.post("/token", response_model=TokenResponse)

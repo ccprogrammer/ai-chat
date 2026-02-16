@@ -67,6 +67,7 @@ The API will be available at `http://localhost:8000`
 
 - `POST /auth/register` - Create account (email/password)
 - `POST /auth/login` - Login with JSON body (email + password), returns JWT
+- `GET /auth/me` - Get current user (id, email, role); requires valid JWT
 - `POST /auth/token` - OAuth2 token endpoint (form: username=email, password); used by Swagger "Authorize"
 
 ### Chat Management
