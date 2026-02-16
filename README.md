@@ -161,6 +161,79 @@ curl "http://localhost:8000/chats" \
   -H "Authorization: Bearer YOUR_TOKEN_HERE"
 ```
 
+### Get One Chat
+
+```bash
+curl "http://localhost:8000/chats/CHAT_ID_HERE" \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"
+```
+
+### Get Messages in a Chat
+
+```bash
+curl "http://localhost:8000/chats/CHAT_ID_HERE/messages" \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"
+```
+
+### Update Chat Title
+
+```bash
+curl -X PATCH "http://localhost:8000/chats/CHAT_ID_HERE" \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Renamed Chat"
+  }'
+```
+
+### Delete Chat
+
+```bash
+curl -X DELETE "http://localhost:8000/chats/CHAT_ID_HERE" \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"
+```
+
+### Bootstrap First Admin (DEV ONLY)
+
+1. Register a user and copy the returned `id`.
+2. Call this (no auth required, only for local development):
+
+```bash
+curl -X POST "http://localhost:8000/admin/bootstrap/users/USER_ID_HERE/make-admin"
+```
+
+### Admin: List All Users
+
+```bash
+curl "http://localhost:8000/admin/users" \
+  -H "Authorization: Bearer ADMIN_TOKEN_HERE"
+```
+
+### Admin: Change User Role
+
+```bash
+curl -X PATCH "http://localhost:8000/admin/users/USER_ID_HERE/role" \
+  -H "Authorization: Bearer ADMIN_TOKEN_HERE" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "role": "admin"
+  }'
+```
+
+### Admin: List a User's Chats
+
+```bash
+curl "http://localhost:8000/admin/users/USER_ID_HERE/chats" \
+  -H "Authorization: Bearer ADMIN_TOKEN_HERE"
+```
+
+### Admin: Get Messages in Any Chat
+
+```bash
+curl "http://localhost:8000/admin/chats/CHAT_ID_HERE/messages" \
+  -H "Authorization: Bearer ADMIN_TOKEN_HERE"
+```
+
 ## Database
 
 The application uses SQLite by default (can be configured via `DATABASE_URL`). The database file (`ai_chat.db`) will be created automatically on first run.
