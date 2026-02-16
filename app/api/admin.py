@@ -12,7 +12,7 @@ from app.core.auth import get_current_admin
 from app.repositories.auth_repository import UserRepository
 from app.repositories.chat_repository import ChatRepository
 from app.repositories.message_repository import MessageRepository
-from app.models.auth_schemas import UserResponse, UserRoleUpdateRequest
+from app.models.schemas.auth import UserResponse, UserRoleUpdateRequest
 from app.models.schemas import ChatResponse, ChatListResponse, MessageResponse
 from app.core.exceptions import UserNotFoundError, ChatNotFoundError
 

@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.security import create_access_token
-from app.models.auth_schemas import (
+from app.models.schemas.auth import (
     UserRegisterRequest,
     UserLoginRequest,
     UserResponse,
