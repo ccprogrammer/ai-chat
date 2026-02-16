@@ -13,6 +13,15 @@ class ChatNotFoundError(HTTPException):
         )
 
 
+class UserNotFoundError(HTTPException):
+    """Raised when a user is not found"""
+    def __init__(self, user_id: str):
+        super().__init__(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"User with id '{user_id}' not found"
+        )
+
+
 class UnauthorizedChatAccessError(HTTPException):
     """Raised when user tries to access a chat that doesn't belong to them"""
     def __init__(self):

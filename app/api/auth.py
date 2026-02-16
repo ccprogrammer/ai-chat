@@ -26,6 +26,7 @@ def register(request: UserRegisterRequest, db: Session = Depends(get_db)):
     if existing:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")
     try:
+        # New users always start as regular users; admins can promote via /admin/users/{user_id}/role
         user = UserRepository.create_user(db, request.email, request.password)
         return user
     except ValueError as e:

@@ -2,6 +2,8 @@
 Auth-related Pydantic schemas.
 """
 
+from typing import Literal
+
 from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
 
@@ -29,6 +31,7 @@ class UserLoginRequest(BaseModel):
 class UserResponse(BaseModel):
     id: str
     email: EmailStr
+    role: str = "user"
     created_at: datetime
 
     class Config:
@@ -38,4 +41,9 @@ class UserResponse(BaseModel):
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+
+class UserRoleUpdateRequest(BaseModel):
+    """Body for updating a user's role (admin API)."""
+    role: Literal["user", "admin"]
 

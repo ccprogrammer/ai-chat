@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.auth import router as auth_router
 from app.api.chat import router as chat_router
 from app.api.chats import router as chats_router
+from app.api.admin import router as admin_router
 from app.core.database import init_db
 
 # Configure logging so uvicorn terminal shows our debug output
@@ -58,6 +59,7 @@ async def log_requests(request: Request, call_next):
 app.include_router(auth_router)  # Auth endpoints
 app.include_router(chats_router)  # Chat management endpoints
 app.include_router(chat_router)  # Chat message endpoint
+app.include_router(admin_router)  # Admin-only endpoints
 
 
 @app.get("/")

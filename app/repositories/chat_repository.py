@@ -34,6 +34,11 @@ class ChatRepository:
         ).first()
 
     @staticmethod
+    def get_chat_by_id_any(db: Session, chat_id: str) -> Optional[Chat]:
+        """Get any chat by ID (for admin)."""
+        return db.query(Chat).filter(Chat.id == chat_id).first()
+
+    @staticmethod
     def get_user_chats(db: Session, user_id: str, limit: int = 50, offset: int = 0) -> List[Chat]:
         """
         Get all chats for a user, ordered by most recent first

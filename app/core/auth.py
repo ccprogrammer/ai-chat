@@ -68,3 +68,13 @@ def get_current_user(
     logger.info("Auth: OK user=%s", user.email)
     return user
 
+
+def get_current_admin(user=Depends(get_current_user)):
+    """Require the current user to be an admin (role=admin)."""
+    if user.role == "admin":
+        return user
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail="Admin access required",
+    )
+

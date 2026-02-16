@@ -82,6 +82,15 @@ The API will be available at `http://localhost:8000`
 
 - `POST /chat` - Send a message to AI in a chat
 
+### Admin (admin only)
+
+- `GET /admin/users` - List all users
+- `PATCH /admin/users/{user_id}/role` - Change a user's role (`user` or `admin`)
+- `GET /admin/users/{user_id}/chats` - List all chats of a user
+- `GET /admin/chats/{chat_id}/messages` - Get all messages in any chat
+
+Admins are users whose `role` is set to `admin` in the database. New users always start with `role=\"user\"`; existing admins can promote/demote users using `PATCH /admin/users/{user_id}/role`.
+
 ### Other
 
 - `GET /` - Root endpoint
@@ -151,6 +160,8 @@ curl "http://localhost:8000/chats" \
 ## Database
 
 The application uses SQLite by default (can be configured via `DATABASE_URL`). The database file (`ai_chat.db`) will be created automatically on first run.
+
+**If you already have a database** from before the admin feature: add the `role` column so existing users get a default role, e.g. in SQLite: `ALTER TABLE users ADD COLUMN role VARCHAR NOT NULL DEFAULT 'user';` (or remove the DB file to recreate from scratch).
 
 ### Database Schema
 
