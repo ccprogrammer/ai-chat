@@ -6,7 +6,12 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
 
-# SQLite database URL
+from dotenv import load_dotenv
+
+# Ensure environment variables from .env are loaded before reading DATABASE_URL
+load_dotenv()
+
+# Database URL – defaults to local SQLite if not overridden
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./ai_chat.db")
 
 # Create engine
