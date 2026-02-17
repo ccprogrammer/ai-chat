@@ -68,7 +68,7 @@ uvicorn app.main:app --reload
 or
 
 ```bash
-python3 -m uvicorn main:app --reload
+python3 -m uvicorn app.main:app --reload
 ```
 
 The API will be available at `http://localhost:8000`
