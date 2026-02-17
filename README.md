@@ -45,6 +45,12 @@ app/
 pip install -r requirements.txt
 ```
 
+or
+
+```bash
+pip3 install -r requirements.txt
+```
+
 2. **Set up environment variables**:
    Create a `.env` file in the root directory:
 
@@ -57,6 +63,12 @@ DATABASE_URL=sqlite:///./ai_chat.db  # Optional, defaults to this
 
 ```bash
 uvicorn app.main:app --reload
+```
+
+or
+
+```bash
+python3 -m uvicorn main:app --reload
 ```
 
 The API will be available at `http://localhost:8000`
@@ -105,7 +117,7 @@ Admins are users whose `role` is set to `admin` in the database. New users alway
 
 ## Authentication (how to stay logged in)
 
-- **Swagger UI (`/docs`)**: Click **Authorize**, enter your **email** in the *username* field and your password, then click Authorize. All subsequent requests will send the Bearer token automatically.
+- **Swagger UI (`/docs`)**: Click **Authorize**, enter your **email** in the _username_ field and your password, then click Authorize. All subsequent requests will send the Bearer token automatically.
 - **curl / app**: After `POST /auth/login`, copy `access_token` from the response and send it in the header: `Authorization: Bearer <access_token>` on every request.
 
 ## Usage Examples
