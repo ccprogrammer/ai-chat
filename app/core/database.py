@@ -8,20 +8,11 @@ import os
 
 from dotenv import load_dotenv
 
-# Ensure environment variables from .env are loaded before reading settings
+# Ensure environment variables from .env are loaded before reading DATABASE_URL
 load_dotenv()
 
-# Environment: "local" (default) or "production"
-APP_ENV = os.getenv("APP_ENV", "local")
-
-if APP_ENV == "production":
-    # In production, fail loudly if DATABASE_URL is not configured (e.g. Neon on Render)
-    DATABASE_URL = os.getenv("DATABASE_URL")
-    if not DATABASE_URL:
-        raise RuntimeError("APP_ENV=production but DATABASE_URL is not set")
-else:
-    # In local/dev, prefer a dedicated local URL and fall back to SQLite file
-    DATABASE_URL = os.getenv("DATABASE_URL_LOCAL", "sqlite:///./ai_chat.db")
+# Database URL – defaults to local SQLite if not overridden
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./ai_chat.db")
 
 # Create engine
 engine = create_engine(
