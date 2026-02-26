@@ -2,16 +2,18 @@
 ChatRequest schema.
 """
 
+from typing import Optional
 from pydantic import BaseModel, Field
 
 
 class ChatRequest(BaseModel):
     """
     Incoming chat message from the client (Flutter, Web, etc.)
+    If chat_id is omitted or invalid, a new chat is created and the message is sent to it.
     """
-    chat_id: str = Field(
-        ...,
-        description="Unique identifier for the chat/conversation"
+    chat_id: Optional[str] = Field(
+        default=None,
+        description="Chat ID. If omitted or not found, a new chat is created"
     )
     message: str = Field(
         ...,
