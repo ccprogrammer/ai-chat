@@ -8,8 +8,6 @@ from app.core.auth import get_current_user
 from app.models.schemas import ChatRequest, ChatMessageResponse
 from app.services.ai_service import chat_with_ai
 from app.repositories.chat_repository import ChatRepository
-from app.core.exceptions import ChatNotFoundError
-
 router = APIRouter(tags=["chat"])
 
 
@@ -20,21 +18,20 @@ def send_message(
     current_user=Depends(get_current_user),
 ):
     """
-    Send a message to AI in a specific chat
-    
-    Verifies that the chat exists and belongs to the user before processing.
+    Send a message to AI. If chat_id is omitted or invalid, creates a new chat first.
     """
-    # Verify chat exists and belongs to user
-    chat = ChatRepository.get_chat_by_id(db, request.chat_id, current_user.id)
+    chat_id = request.chat_id
+    chat = ChatRepository.get_chat_by_id(db, chat_id, current_user.id) if chat_id else None
+
     if not chat:
-        raise ChatNotFoundError(request.chat_id)
-    
-    # Get AI reply (always uses fast model); pass user_id so first message can set chat title
+        chat = ChatRepository.create_chat(db, current_user.id, title=None)
+        chat_id = chat.id
+
     reply = chat_with_ai(
         db=db,
-        chat_id=request.chat_id,
+        chat_id=chat_id,
         user_message=request.message,
         user_id=current_user.id,
     )
-    
-    return ChatMessageResponse(reply=reply, chat_id=request.chat_id)
+
+    return ChatMessageResponse(reply=reply, chat_id=chat_id)
