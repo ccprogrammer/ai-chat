@@ -19,7 +19,6 @@ def send_message(
 ):
     """
     Send a message to AI. If chat_id is omitted or invalid, creates a new chat first.
-    ChatGPT-style: single API call for both new and existing chats.
     """
     chat_id = request.chat_id
     chat = ChatRepository.get_chat_by_id(db, chat_id, current_user.id) if chat_id else None

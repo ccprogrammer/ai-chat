@@ -8,8 +8,8 @@ from pydantic import BaseModel, Field
 
 class ChatRequest(BaseModel):
     """
-    Incoming chat message from the client (Flutter, Web, etc.)
-    If chat_id is omitted or invalid, a new chat is created and the message is sent to it.
+    Incoming chat message from the client.
+    If chat_id is omitted or invalid, a new chat is created.
     """
     chat_id: Optional[str] = Field(
         default=None,
