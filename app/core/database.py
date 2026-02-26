@@ -1,7 +1,7 @@
 """
 Database configuration and session management
 """
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
@@ -38,6 +38,16 @@ def get_db():
         db.close()
 
 
+def _migrate_token_version():
+    """Add token_version column to users if it doesn't exist (for existing DBs)."""
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("ALTER TABLE users ADD COLUMN token_version VARCHAR DEFAULT '0'"))
+            conn.commit()
+    except Exception:
+        pass  # Column likely already exists
+
+
 def init_db():
     """
     Initialize database - create all tables
@@ -46,3 +56,4 @@ def init_db():
     # (otherwise Base.metadata may be empty at startup)
     from app.models import database  # noqa: F401
     Base.metadata.create_all(bind=engine)
+    _migrate_token_version()

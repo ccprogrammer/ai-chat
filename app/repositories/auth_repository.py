@@ -68,3 +68,12 @@ class UserRepository:
         if not verify_password(password, user.hashed_password):
             return None
         return user
+
+    @staticmethod
+    def increment_token_version(db: Session, user_id: str) -> None:
+        """Increment token_version to invalidate all existing tokens for this user."""
+        user = UserRepository.get_by_id(db, user_id)
+        if user:
+            current = int(user.token_version) if user.token_version else 0
+            user.token_version = str(current + 1)
+            db.commit()

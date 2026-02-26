@@ -44,8 +44,15 @@ def login(request: UserLoginRequest, db: Session = Depends(get_db)):
     user = UserRepository.authenticate(db, request.email, request.password)
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
-    token = create_access_token(subject=user.id)
+    token = create_access_token(subject=user.id, token_version=str(user.token_version))
     return TokenResponse(access_token=token)
+
+
+@router.post("/logout")
+def logout(user=Depends(get_current_user), db: Session = Depends(get_db)):
+    """Logout: invalidates all tokens for this user (e.g. across all browsers)."""
+    UserRepository.increment_token_version(db, user.id)
+    return {"detail": "Logged out"}
 
 
 @router.get("/me", response_model=UserResponse)
@@ -68,6 +75,6 @@ def login_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
             detail="Invalid email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    token = create_access_token(subject=user.id)
+    token = create_access_token(subject=user.id, token_version=str(user.token_version))
     return TokenResponse(access_token=token)
 

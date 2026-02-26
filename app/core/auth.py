@@ -65,6 +65,16 @@ def get_current_user(
             detail="User not found",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    # Check token version: logout increments this to invalidate all sessions
+    token_ver = payload.get("ver")
+    user_ver = str(user.token_version) if user.token_version else "0"
+    if token_ver != user_ver:
+        logger.warning("Auth: token version mismatch user=%s (token ver=%s, user ver=%s)", user.email, token_ver, user_ver)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Session expired",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     logger.info("Auth: OK user=%s", user.email)
     return user
 

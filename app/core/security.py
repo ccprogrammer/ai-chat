@@ -31,11 +31,19 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return plain_password
 
 
-def create_access_token(subject: str, expires_minutes: Optional[int] = None) -> str:
+def create_access_token(
+    subject: str,
+    token_version: str = "0",
+    expires_minutes: Optional[int] = None,
+) -> str:
     expire = datetime.now(timezone.utc) + timedelta(
         minutes=expires_minutes if expires_minutes is not None else ACCESS_TOKEN_EXPIRE_MINUTES
     )
-    to_encode: dict[str, Any] = {"sub": subject, "exp": expire}
+    to_encode: dict[str, Any] = {
+        "sub": subject,
+        "ver": token_version,
+        "exp": expire,
+    }
     return jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
 
 

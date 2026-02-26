@@ -22,6 +22,7 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     role = Column(String, nullable=False, default="user")  # "user" | "admin"
+    token_version = Column(String, nullable=False, default="0")  # incremented on logout to invalidate all tokens
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     chats = relationship("Chat", back_populates="user", cascade="all, delete-orphan")
