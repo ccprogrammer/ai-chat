@@ -12,7 +12,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Database URL – defaults to local SQLite if not overridden
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./ai_chat.db")
+# On Vercel, use /tmp (only writable path) since project dir is read-only
+_default_db = "sqlite:////tmp/ai_chat.db" if os.getenv("VERCEL") else "sqlite:///./ai_chat.db"
+DATABASE_URL = os.getenv("DATABASE_URL", _default_db)
 
 # Create engine
 engine = create_engine(

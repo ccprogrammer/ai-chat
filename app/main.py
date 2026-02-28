@@ -19,9 +19,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger("app")
 
-# Initialize database on startup
-init_db()
-
 # Create FastAPI app
 app = FastAPI(
     title="AI Chat Backend",
@@ -60,6 +57,12 @@ app.include_router(auth_router)  # Auth endpoints
 app.include_router(chats_router)  # Chat management endpoints
 app.include_router(chat_router)  # Chat message endpoint
 app.include_router(admin_router)  # Admin-only endpoints
+
+
+@app.on_event("startup")
+def on_startup():
+    """Initialize database on first request (deferred to avoid import-time failures on Vercel)."""
+    init_db()
 
 
 @app.get("/")
